@@ -1,1 +1,195 @@
-<p>task works!</p>
+<div class="bg-white rounded-xl shadow p-4">
+  <!-- Barra superior: limpiar (izq) + buscador global por usuario (der) -->
+  <p-card>
+    <form [formGroup]="filterForm">
+      <p-table
+        #dt
+        [value]="tasks"
+        [lazy]="true"
+        [paginator]="true"
+        [rows]="rows"
+        [totalRecords]="totalRecords"
+        [loading]="loading"
+        [rowsPerPageOptions]="[5, 10, 20, 50]"
+        [sortField]="sortField"
+        [sortOrder]="sortOrder"
+        (onLazyLoad)="loadLazy($event)"
+        [tableStyle]="{ 'min-width': '1200px' }"
+        dataKey="id"
+      >
+        <!-- Fila de filtros por columna -->
+        <ng-template pTemplate="caption">
+          <div class="flex justify-between mb-4">
+            <p-button
+              label="Limpiar filtros"
+              icon="pi pi-filter-slash"
+              severity="secondary"
+              variant="outlined"
+              class="p-button-text"
+              (click)="clearAll()"
+            ></p-button>
+            <div>
+              <p-inputgroup>
+                <input
+                  pInputText
+                  type="text"
+                  placeholder="Buscar por Usuario (nombre o correo)"
+                  formControlName="globalUser"
+                  maxlength="40"
+                  (keyup.enter)="applyFilters()"
+                />
+                <p-inputgroup-addon>
+                  <button
+                    pButton
+                    type="button"
+                    icon="pi pi-search"
+                    class="p-button-text"
+                    (onClick)="applyFilters()"
+                  ></button>
+                </p-inputgroup-addon>
+              </p-inputgroup>
+            </div>
+          </div>
+        </ng-template>
+
+        <!-- Encabezados -->
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="user.fullName">
+              <span class="me-2">Usuario</span>
+              <p-sortIcon field="user.fullName" />
+              <p-columnFilter
+                field="user.fullName"
+                display="menu"
+                [showMatchModes]="false"
+                [showOperator]="false"
+                [showAddButton]="false"
+                [showClearButton]="false"
+              >
+                <ng-template #filter let-value let-filter="filterCallback">
+                  <p-inputGroup>
+                    <input
+                      pInputText
+                      type="text"
+                      placeholder="Filtrar por Nombre"
+                      maxlength="40"
+                      (keydown.enter)="filter()"
+                    />
+                    <p-inputgroup-addon>
+                      <button
+                        icon="pi pi-search"
+                        (onClick)="filter(value)"
+                      ></button>
+                    </p-inputgroup-addon>
+                  </p-inputGroup>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th pSortableColumn="user.email">
+              <span class="me-2">Correo</span>
+              <p-sortIcon field="user.email" />
+              <p-columnFilter
+                field="user.email"
+                display="menu"
+                [showMatchModes]="false"
+                [showOperator]="false"
+                [showAddButton]="false"
+                [showClearButton]="false"
+              >
+                <ng-template #filter let-value let-filter="filterCallback">
+                  <p-inputGroup>
+                    <input
+                      pInputText
+                      type="text"
+                      placeholder="Filtrar por Correo"
+                      maxlength="40"
+                      (keydown.enter)="filter()"
+                    />
+                    <p-inputgroup-addon>
+                      <button
+                        icon="pi pi-search"
+                        (onClick)="filter(value)"
+                      ></button>
+                    </p-inputgroup-addon>
+                  </p-inputGroup>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th pSortableColumn="title">
+              <span class="me-2">Título</span>
+              <p-sortIcon field="title" />
+              <p-columnFilter
+                field="title"
+                display="menu"
+                [showMatchModes]="false"
+                [showOperator]="false"
+                [showAddButton]="false"
+                [showClearButton]="false"
+              >
+                <ng-template #filter let-value let-filter="filterCallback">
+                  <p-inputGroup>
+                    <input
+                      pInputText
+                      type="text"
+                      placeholder="Filtrar por Título"
+                      maxlength="40"
+                      (keydown.enter)="filter()"
+                    />
+                    <p-inputgroup-addon>
+                      <button
+                        icon="pi pi-search"
+                        (click)="filter(value)"
+                      ></button>
+                    </p-inputgroup-addon>
+                  </p-inputGroup>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th>Descripción</th>
+            <th pSortableColumn="status.name">
+              Estado <p-sortIcon field="status.name" />
+            </th>
+            <th pSortableColumn="createdAt">
+              Creación <p-sortIcon field="createdAt" />
+            </th>
+            <th pSortableColumn="updatedAt">
+              Actualización <p-sortIcon field="updatedAt" />
+            </th>
+          </tr>
+        </ng-template>
+
+        <!-- Celdas -->
+        <ng-template pTemplate="body" let-row>
+          <tr>
+            <td class="whitespace-nowrap">{{ row.user?.fullName }}</td>
+            <td class="whitespace-nowrap">{{ row.user?.email }}</td>
+            <td class="whitespace-nowrap">{{ row.title }}</td>
+            <td class="max-w-[420px] truncate">{{ row.description }}</td>
+            <td>
+              <p-tag
+                [value]="row.status?.name"
+                [severity]="statusSeverity(row.status?.name)"
+              ></p-tag>
+            </td>
+            <td>{{ row.createdAt | date : "yyyy-MM-dd HH:mm" }}</td>
+            <td>
+              {{
+                row.updatedAt
+                  ? (row.updatedAt | date : "yyyy-MM-dd HH:mm")
+                  : "-"
+              }}
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7" class="text-center py-6 text-gray-500">
+              Sin resultados
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </form>
+  </p-card>
+</div>

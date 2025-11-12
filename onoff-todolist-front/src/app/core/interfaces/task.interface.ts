@@ -10,7 +10,6 @@ export interface ITask {
   idUser: number;
   idStatus: number;
 
-  // Relaciones (para respuesta del backend)
   user?: IUser;
   status?: IStatusTask;
 }
