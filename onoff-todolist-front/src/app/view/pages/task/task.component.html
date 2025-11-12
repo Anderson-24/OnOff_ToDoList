@@ -155,6 +155,7 @@
             <th pSortableColumn="updatedAt">
               Actualización <p-sortIcon field="updatedAt" />
             </th>
+            <th style="width: 120px; text-align: center;">Acciones</th>
           </tr>
         </ng-template>
 
@@ -178,6 +179,27 @@
                   ? (row.updatedAt | date : "yyyy-MM-dd HH:mm")
                   : "-"
               }}
+            </td>
+            <td class="text-center">
+              <div class="flex items-center justify-center gap-2">
+                <p-button
+                  icon="pi pi-pencil"
+                  severity="info"
+                  [text]="true"
+                  pTooltip="Editar"
+                  tooltipPosition="top"
+                  (click)="onEditTask(row)"
+                ></p-button>
+
+                <p-button
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [text]="true"
+                  pTooltip="Eliminar"
+                  tooltipPosition="top"
+                  (click)="onDeleteTask(row.id)"
+                ></p-button>
+              </div>
             </td>
           </tr>
         </ng-template>

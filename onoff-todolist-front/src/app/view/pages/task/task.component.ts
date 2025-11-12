@@ -13,6 +13,8 @@ import { Table, TableLazyLoadEvent } from 'primeng/table';
 import { ITask } from '../../../core/interfaces/task.interface';
 import { TaskService } from '../../../core/services/task.service';
 import { CardModule } from 'primeng/card';
+import { AlertsMessagesService } from '../../../core/services/utils/alerts-messages/alerts-messages.service';
+import { NgColor } from '../../../core/interfaces/message.interface';
 
 @Component({
   selector: 'app-task',
@@ -45,7 +47,11 @@ export class TaskComponent {
   // Reactive form de filtros
   filterForm!: FormGroup;
 
-  constructor(private taskService: TaskService, private fb: FormBuilder) {}
+  constructor(
+    private taskService: TaskService,
+    private fb: FormBuilder,
+    private alerts: AlertsMessagesService
+  ) {}
 
   ngOnInit() {
     this.filterForm = this.fb.group({
@@ -94,15 +100,35 @@ export class TaskComponent {
           this.totalRecords = res.total;
           this.sortField = sortField!;
           this.sortOrder = sortOrder!;
+
+          this.alerts.showAlert({
+            type: 'toast',
+            severity: NgColor.success,
+            title: 'Consulta exitosa',
+            message: `Se cargaron ${res.data.length} registros.`,
+            showAlert: true,
+            life: 2500,
+          });
         },
         error: () => {
           this.tasks = [];
           this.totalRecords = 0;
+
+          this.loading = false;
+
+          this.alerts.showAlert({
+            type: 'toast',
+            severity: NgColor.danger,
+            title: 'Error',
+            message: 'Ha ocurrido un error al consultar las tareas.',
+            showAlert: true,
+            life: 4000,
+          });
         },
       });
   }
 
-  applyFilters() {
+  public applyFilters() {
     // ir a primera página y recargar con filtros actuales
     this.dt.first = 0;
     this.loadLazy({
@@ -132,5 +158,57 @@ export class TaskComponent {
     if (n.includes('curso')) return 'warning';
     if (n.includes('bloque')) return 'danger';
     return undefined;
+  }
+
+  public onEditTask(row: ITask): void {
+
+    this.alerts.showAlert({
+      type: 'toast',
+      severity: NgColor.info,
+      title: 'Editar',
+      message: `Abrir modal de edición para la tarea #${row.id}.`,
+      showAlert: true,
+      life: 1800,
+    });
+  }
+
+  public async onDeleteTask(taskId: number) {
+    const ok = await this.alerts.showAlert({
+      type: 'dialog',
+      icon: 'pi pi-exclamation-triangle',
+      title: 'Eliminar tarea',
+      titleClass: 'text-red-500',
+      message: '¿Está seguro de eliminar esta tarea?',
+      secondaryMessage: 'Esta acción es irreversible.',
+      textBtnCancel: 'No, cancelar',
+      textBtnConfirm: 'Sí, eliminar',
+      colorBtnConfirm: NgColor.danger,
+      showAlert: true,
+      width: '420px',
+    });
+
+    if (!ok) return;
+
+    this.taskService.delete(taskId).subscribe({
+      next: () => {
+        this.alerts.showAlert({
+          type: 'toast',
+          severity: NgColor.success,
+          title: '¡Hecho!',
+          message: 'La tarea fue eliminada correctamente.',
+          showAlert: true,
+        });
+        this.clearAll();
+      },
+      error: () => {
+        this.alerts.showAlert({
+          type: 'toast',
+          severity: NgColor.danger,
+          title: 'Error',
+          message: 'No fue posible eliminar la tarea.',
+          showAlert: true,
+        });
+      },
+    });
   }
 }

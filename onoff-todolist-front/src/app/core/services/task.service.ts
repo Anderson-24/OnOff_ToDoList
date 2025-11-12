@@ -34,4 +34,10 @@ export class TaskService {
       }
     );
   }
+
+  public delete(id: number) {
+    return this.http.delete<void>(
+      `${this.applicationConfigService.getEndpointPrefix('Tasks')}/${id}`
+    );
+  }
 }
