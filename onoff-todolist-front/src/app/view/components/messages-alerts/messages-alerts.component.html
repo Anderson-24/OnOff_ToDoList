@@ -1,0 +1,56 @@
+<!-- Diálogo -->
+<p-dialog *ngIf="message.showAlert && (message.type === 'dialog' || !message.type)"
+          [modal]="true"
+          [(visible)]="message.showAlert"
+          [closable]="message.closeHandler ? false : true"
+          (onHide)="onDialogHide()"
+          [style]="{ width: message.width ?? 'auto' }"
+          [contentStyle]="{ padding: '0 2rem 1.7rem' }">
+  <ng-template pTemplate="header">
+    <div class="flex items-center gap-2">
+      <i [class]="message.icon?.toString() ?? ''"
+         class="title-size-alert"
+         [ngClass]="message.titleClass ?? 'text-primary'"></i>
+      <span class="title-text-alert font-bold"
+            [ngClass]="message.titleClass ?? 'text-primary'">{{ message.title }}</span>
+    </div>
+  </ng-template>
+
+  <div [ngClass]="{ 'mb-3': message.secondaryMessage, 'mb-8': !message.secondaryMessage }">
+    <span class="text-size-alert semiBold">{{ message.message }}</span>
+  </div>
+
+  <div class="mb-8" *ngIf="message.secondaryMessage">
+    <span class="p-text-secondary lightBold">{{ message.secondaryMessage }}</span>
+  </div>
+
+  <div class="flex justify-center space-x-6">
+    <p-button *ngIf="message.textBtnCancel"
+              [label]="message.textBtnCancel"
+              [severity]="message.colorBtnCancel ? message.colorBtnCancel : 'secondary'"
+              styleClass="action-button"
+              (click)="close(false)"></p-button>
+
+    <p-button *ngIf="message.textBtnConfirm"
+              [label]="message.textBtnConfirm"
+              [severity]="message.colorBtnConfirm ? message.colorBtnConfirm : 'primary'"
+              styleClass="action-button"
+              (click)="close(true)"></p-button>
+  </div>
+</p-dialog>
+
+<!-- Toast -->
+<p-toast key="top-center"
+         position="top-center"
+         (onClose)="handleToastClose()"
+         [style]="{ 'min-width': '300px', 'max-width': '600px', 'width': 'auto' }">
+  <ng-template let-message pTemplate="message">
+    <div class="flex items-center gap-2">
+      <i class="pi pi-check-circle semiBold"></i>
+      <div>
+        <span class="semiBold">{{ message.summary }} </span>
+        <span [innerHTML]="message.detail"></span>
+      </div>
+    </div>
+  </ng-template>
+</p-toast>

@@ -1,0 +1,13 @@
+:host ::ng-deep {
+  .p-card {
+    border-radius: 1rem;
+    padding: 2rem;
+    background: white;
+  }
+  .p-password input {
+    width: 100%;
+  }
+  button {
+    border-radius: 0.5rem;
+  }
+}
