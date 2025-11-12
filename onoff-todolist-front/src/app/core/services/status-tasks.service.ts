@@ -14,7 +14,7 @@ export class StatusTasksService {
 
   public getAll(): Observable<IStatusTask[]> {
     return this.http.get<IStatusTask[]>(
-      this.applicationConfigService.getEndpointPrefix('StatusTask')
+      this.applicationConfigService.getEndpointPrefix('StatusTasks')
     );
   }
 }

@@ -1,6 +1,15 @@
 <div class="bg-white rounded-xl shadow p-4">
   <!-- Barra superior: limpiar (izq) + buscador global por usuario (der) -->
   <p-card>
+    <p-button
+      label="Nueva tarea"
+      icon="pi pi-plus"
+      severity="success"
+      variant="outlined"
+      class="p-button-text mb-4 me-2"
+      (click)="openModal('create')"
+    ></p-button>
+
     <form [formGroup]="filterForm">
       <p-table
         #dt
@@ -188,7 +197,7 @@
                   [text]="true"
                   pTooltip="Editar"
                   tooltipPosition="top"
-                  (click)="onEditTask(row)"
+                  (click)="openModal('edit', row)"
                 ></p-button>
 
                 <p-button
@@ -217,7 +226,6 @@
 </div>
 
 <app-task-editcreate
-  [visible]="showEditor()"
   [mode]="editorMode()"
   [task]="selectedTask()"
   (saved)="handleSaved()"
