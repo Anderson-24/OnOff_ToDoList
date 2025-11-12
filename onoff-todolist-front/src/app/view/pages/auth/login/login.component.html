@@ -1,0 +1,43 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-100">
+  <p-card class="w-full max-w-md shadow-lg">
+    <div class="text-center mb-4">
+      <h2 class="text-2xl font-semibold text-blue-600">OnOff ToDoList</h2>
+      <p class="text-gray-500 text-sm">Inicia sesión para continuar</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-600 mb-1">Correo</label>
+        <input
+          pInputText
+          formControlName="email"
+          type="email"
+          class="w-full"
+          placeholder="usuario@onoff.com"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-600 mb-1">Contraseña</label>
+        <p-password
+          formControlName="password"
+          [feedback]="false"
+          inputStyleClass="w-full"
+          placeholder="••••••••"
+        ></p-password>
+      </div>
+
+      <button
+        pButton
+        type="submit"
+        label="Iniciar sesión"
+        [loading]="loading"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+      ></button>
+
+      <p *ngIf="errorMessage" class="text-red-500 text-sm text-center">
+        {{ errorMessage }}
+      </p>
+    </form>
+  </p-card>
+</div>

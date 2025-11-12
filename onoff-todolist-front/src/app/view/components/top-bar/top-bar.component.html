@@ -1,0 +1,31 @@
+<header class="sticky top-0 z-20 bg-white border-b border-gray-200">
+  <div class="max-w-7xl mx-auto px-4 py-2 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+    <!-- Izquierda -->
+    <div class="flex items-center gap-3">
+      <button pButton type="button" icon="pi pi-bars" class="p-button-text" (click)="app.toggleSidebar()"></button>
+      <h1 class="text-lg md:text-xl font-semibold text-gray-800">OnOff ToDoList</h1>
+    </div>
+
+    <!-- Derecha -->
+    <div class="flex items-center gap-3 justify-between md:justify-end">
+      <div class="flex items-center gap-2">
+        <span class="relative inline-flex">
+          <p-avatar icon="pi pi-user" shape="circle"></p-avatar>
+          <!-- puntico de estado opcional -->
+          <span class="absolute -right-0 -bottom-0 block h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white"></span>
+        </span>
+        <div class="text-right">
+          <div class="text-sm font-medium text-gray-800 truncate max-w-[220px]">
+            {{ app.user()?.fullName || 'Invitado' }}
+          </div>
+          <div class="text-xs text-gray-500 truncate max-w-[220px]">
+            {{ app.user()?.email || 'sin-email' }}
+          </div>
+        </div>
+      </div>
+
+      <button pButton label="Salir" icon="pi pi-sign-out" class="p-button-danger"
+              (click)="logout()"></button>
+    </div>
+  </div>
+</header>

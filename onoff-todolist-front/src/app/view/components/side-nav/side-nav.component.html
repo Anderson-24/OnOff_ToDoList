@@ -1,0 +1,15 @@
+<p-sidebar [visible]="app.sidebarOpen()" (visibleChange)="app.sidebarOpen.set($event)" [modal]="true" position="left" styleClass="w-72">
+  <div class="p-4">
+    <h2 class="text-lg font-semibold mb-4">Menú</h2>
+    <nav class="flex flex-col gap-1">
+      <a routerLink="/" routerLinkActive="bg-gray-100"
+         (click)="navigate('/')" class="flex items-center gap-2 p-2 rounded hover:bg-gray-100">
+        <i class="pi pi-chart-bar text-gray-600"></i><span>Dashboard</span>
+      </a>
+      <a routerLink="/tareas" routerLinkActive="bg-gray-100"
+         (click)="navigate('/tareas')" class="flex items-center gap-2 p-2 rounded hover:bg-gray-100">
+        <i class="pi pi-list-check text-gray-600"></i><span>Tareas</span>
+      </a>
+    </nav>
+  </div>
+</p-sidebar>
