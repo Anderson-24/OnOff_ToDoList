@@ -1,0 +1,71 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [closable]="!loading()"
+  [style]="{ width: '520px' }"
+  (onHide)="onHideDialog()"
+>
+  <ng-template pTemplate="header">
+    <span class="text-lg font-semibold">
+      {{ mode === 'edit' ? 'Editar Tarea' : 'Nueva Tarea' }}
+    </span>
+  </ng-template>
+
+  <form [formGroup]="form" class="space-y-4">
+    <p-dropdown
+      formControlName="idUser"
+      [options]="usersOptions()"
+      optionLabel="fullName"
+      optionValue="id"
+      placeholder="Seleccione usuario"
+      styleClass="w-full"
+    ></p-dropdown>
+
+    <p-dropdown
+      formControlName="idStatus"
+      [options]="statusOptions()"
+      optionLabel="name"
+      optionValue="id"
+      placeholder="Seleccione estado"
+      styleClass="w-full"
+    ></p-dropdown>
+
+    <input
+      pInputText
+      type="text"
+      formControlName="title"
+      placeholder="Título"
+      class="w-full"
+      maxlength="100"
+    />
+
+    <!-- ⬅️ Textarea moderno de PrimeNG -->
+    <textarea
+      pTextarea
+      formControlName="description"
+      placeholder="Descripción"
+      class="w-full"
+      rows="4"
+      [autoResize]="true"
+      maxlength="500"
+    ></textarea>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      type="button"
+      label="Cancelar"
+      class="p-button-text"
+      (click)="cancel()"
+      [disabled]="loading()"
+    ></button>
+    <button
+      pButton
+      type="button"
+      [label]="mode === 'edit' ? 'Actualizar' : 'Crear'"
+      (click)="submit()"
+      [disabled]="loading()"
+    ></button>
+  </ng-template>
+</p-dialog>

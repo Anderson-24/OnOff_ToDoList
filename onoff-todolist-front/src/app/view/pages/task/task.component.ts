@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, signal, ViewChild } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
@@ -15,6 +15,7 @@ import { TaskService } from '../../../core/services/task.service';
 import { CardModule } from 'primeng/card';
 import { AlertsMessagesService } from '../../../core/services/utils/alerts-messages/alerts-messages.service';
 import { NgColor } from '../../../core/interfaces/message.interface';
+import { TaskEditcreateComponent } from './task-editcreate/task-editcreate.component';
 
 @Component({
   selector: 'app-task',
@@ -29,6 +30,7 @@ import { NgColor } from '../../../core/interfaces/message.interface';
     ReactiveFormsModule,
     DatePipe,
     CardModule,
+    TaskEditcreateComponent,
   ],
   templateUrl: './task.component.html',
   styleUrl: './task.component.scss',
@@ -44,8 +46,12 @@ export class TaskComponent {
   sortField = 'createdAt';
   sortOrder: 1 | -1 = -1;
 
-  // Reactive form de filtros
   filterForm!: FormGroup;
+  showEditor = signal(false);
+  editorMode = signal<'create' | 'edit'>('create');
+  selectedTask = signal<ITask | null>(null);
+
+  private lastLazyEvent: TableLazyLoadEvent | null = null;
 
   constructor(
     private taskService: TaskService,
@@ -55,13 +61,12 @@ export class TaskComponent {
 
   ngOnInit() {
     this.filterForm = this.fb.group({
-      userName: [''], // filtro por columna Usuario
-      email: [''], // filtro por columna Correo
-      title: [''], // filtro por columna Título
-      globalUser: [''], // buscador superior (nombre de usuario)
+      userName: [''],
+      email: [''],
+      title: [''],
+      globalUser: [''],
     });
 
-    // Carga inicial
     this.loadLazy({
       first: 0,
       rows: this.rows,
@@ -71,6 +76,7 @@ export class TaskComponent {
   }
 
   public loadLazy(event: TableLazyLoadEvent) {
+    this.lastLazyEvent = event;
     this.loading = true;
 
     const page = (event.first ?? 0) / (event.rows ?? this.rows) + 1;
@@ -161,7 +167,6 @@ export class TaskComponent {
   }
 
   public onEditTask(row: ITask): void {
-
     this.alerts.showAlert({
       type: 'toast',
       severity: NgColor.info,
@@ -170,6 +175,30 @@ export class TaskComponent {
       showAlert: true,
       life: 1800,
     });
+  }
+
+  openCreate() {
+    this.editorMode.set('create');
+    this.selectedTask.set(null);
+    this.showEditor.set(true);
+  }
+
+  // ⬇️ abrir editar
+  openEdit(row: ITask) {
+    this.editorMode.set('edit');
+    this.selectedTask.set(row);
+    this.showEditor.set(true);
+  }
+
+  // ⬇️ al guardar desde el modal, recargar tabla
+  handleSaved() {
+    this.showEditor.set(false);
+    // recarga con el último lazy event (misma página/filtros)
+    if (this.lastLazyEvent) {
+      this.loadLazy(this.lastLazyEvent);
+    } else {
+      // fallback si no hay lazy event aún
+    }
   }
 
   public async onDeleteTask(taskId: number) {

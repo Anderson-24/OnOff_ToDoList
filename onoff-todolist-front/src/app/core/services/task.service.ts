@@ -35,6 +35,33 @@ export class TaskService {
     );
   }
 
+  public create(payload: {
+    idUser: number;
+    idStatus: number;
+    title: string;
+    description?: string;
+  }) {
+    return this.http.post<void>(
+      `${this.applicationConfigService.getEndpointPrefix('Tasks')}`,
+      payload
+    );
+  }
+
+  public update(
+    id: number,
+    payload: {
+      idUser: number;
+      idStatus: number;
+      title: string;
+      description?: string;
+    }
+  ) {
+    return this.http.put<void>(
+      `${this.applicationConfigService.getEndpointPrefix('Tasks')}/${id}`,
+      payload
+    );
+  }
+
   public delete(id: number) {
     return this.http.delete<void>(
       `${this.applicationConfigService.getEndpointPrefix('Tasks')}/${id}`

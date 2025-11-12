@@ -155,7 +155,7 @@
             <th pSortableColumn="updatedAt">
               Actualización <p-sortIcon field="updatedAt" />
             </th>
-            <th style="width: 120px; text-align: center;">Acciones</th>
+            <th style="width: 120px; text-align: center">Acciones</th>
           </tr>
         </ng-template>
 
@@ -215,3 +215,10 @@
     </form>
   </p-card>
 </div>
+
+<app-task-editcreate
+  [visible]="showEditor()"
+  [mode]="editorMode()"
+  [task]="selectedTask()"
+  (saved)="handleSaved()"
+></app-task-editcreate>
