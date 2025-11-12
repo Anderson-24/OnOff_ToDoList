@@ -6,7 +6,6 @@ import { IUser } from '../interfaces/user.interface';
 
 @Injectable({ providedIn: 'root' })
 export class UsersService {
-
   constructor(
     private http: HttpClient,
     private applicationConfigService: ApplicationConfigService
@@ -14,7 +13,7 @@ export class UsersService {
 
   public getAll(): Observable<IUser[]> {
     return this.http.get<IUser[]>(
-      this.applicationConfigService.getEndpointPrefix('User')
+      this.applicationConfigService.getEndpointPrefix('Users')
     );
   }
 }

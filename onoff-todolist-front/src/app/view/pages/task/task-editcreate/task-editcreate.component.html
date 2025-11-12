@@ -3,11 +3,12 @@
   [modal]="true"
   [closable]="!loading()"
   [style]="{ width: '520px' }"
+  (onShow)="onShowDialog()"
   (onHide)="onHideDialog()"
 >
   <ng-template pTemplate="header">
     <span class="text-lg font-semibold">
-      {{ mode === 'edit' ? 'Editar Tarea' : 'Nueva Tarea' }}
+      {{ mode === "edit" ? "Editar Tarea" : "Nueva Tarea" }}
     </span>
   </ng-template>
 
@@ -39,7 +40,6 @@
       maxlength="100"
     />
 
-    <!-- ⬅️ Textarea moderno de PrimeNG -->
     <textarea
       pTextarea
       formControlName="description"

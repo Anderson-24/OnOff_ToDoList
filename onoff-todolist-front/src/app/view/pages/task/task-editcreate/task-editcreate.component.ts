@@ -5,6 +5,7 @@ import {
   OnInit,
   Output,
   signal,
+  SimpleChanges,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -49,14 +50,12 @@ export class TaskEditcreateComponent implements OnInit {
   @Input() visible = false;
   @Output() visibleChange = new EventEmitter<boolean>();
 
-  @Input() mode: Mode = 'create';
+  @Input() mode: 'create' | 'edit' = 'create';
   @Input() task: ITask | null = null;
 
   @Output() saved = new EventEmitter<void>();
 
-  // OJO: declarar y asignar luego (para no usar fb antes de tiempo)
   form!: FormGroup;
-
   submitted = false;
   loading = signal(false);
 
@@ -72,7 +71,6 @@ export class TaskEditcreateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Inicializamos aquí el form (o en constructor, como prefieras)
     this.form = this.fb.group({
       idUser: [null as number | null, Validators.required],
       idStatus: [null as number | null, Validators.required],
@@ -82,11 +80,39 @@ export class TaskEditcreateComponent implements OnInit {
 
     this.loadLookups();
 
+    this.fillFormForMode(); // por si entra visible ya en true
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // Si cambia el modo o la tarea, ajusta el formulario
+    if (changes['mode'] || changes['task']) {
+      this.fillFormForMode();
+    }
+  }
+
+  // Se llama cada vez que se muestra el diálogo (evento de PrimeNG)
+  onShowDialog(): void {
+    this.submitted = false;
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
+    this.fillFormForMode();
+  }
+
+  onHideDialog(): void {
+    if (!this.loading()) {
+      this.visibleChange.emit(false);
+    }
+  }
+
+  private fillFormForMode(): void {
+    if (!this.form) return;
+
     if (this.mode === 'edit' && this.task) {
-      this.form.patchValue({
-        idUser: this.task.idUser,
-        idStatus: this.task.idStatus,
-        title: this.task.title,
+      this.form.setValue({
+        idUser: this.task.user && this.task.user.id ? this.task.user.id : null,
+        idStatus:
+          this.task.status && this.task.status.id ? this.task.status.id : null,
+        title: this.task.title ?? '',
         description: this.task.description ?? '',
       });
     } else {
@@ -164,11 +190,5 @@ export class TaskEditcreateComponent implements OnInit {
         });
       },
     });
-  }
-
-  onHideDialog(): void {
-    if (!this.loading()) {
-      this.visibleChange.emit(false);
-    }
   }
 }

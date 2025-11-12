@@ -37,6 +37,8 @@ import { TaskEditcreateComponent } from './task-editcreate/task-editcreate.compo
 })
 export class TaskComponent {
   @ViewChild('dt') dt!: Table;
+  @ViewChild(TaskEditcreateComponent)
+  public taskEditCreateComponent!: TaskEditcreateComponent;
 
   // Tabla
   tasks: ITask[] = [];
@@ -177,28 +179,20 @@ export class TaskComponent {
     });
   }
 
-  openCreate() {
-    this.editorMode.set('create');
-    this.selectedTask.set(null);
-    this.showEditor.set(true);
-  }
-
-  // ⬇️ abrir editar
-  openEdit(row: ITask) {
-    this.editorMode.set('edit');
-    this.selectedTask.set(row);
-    this.showEditor.set(true);
-  }
-
-  // ⬇️ al guardar desde el modal, recargar tabla
   handleSaved() {
     this.showEditor.set(false);
-    // recarga con el último lazy event (misma página/filtros)
     if (this.lastLazyEvent) {
       this.loadLazy(this.lastLazyEvent);
     } else {
       // fallback si no hay lazy event aún
     }
+    this.taskEditCreateComponent.visible = true;
+  }
+  public openModal(type: 'create' | 'edit', task?: ITask) {
+    this.editorMode.set(type);
+    this.selectedTask.set(task ?? null);
+    this.showEditor.set(true);
+    this.taskEditCreateComponent.visible = true;
   }
 
   public async onDeleteTask(taskId: number) {
