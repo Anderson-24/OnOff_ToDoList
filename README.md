@@ -114,6 +114,7 @@ Archivo `proxy.conf.json`:
   "changeOrigin": true
 }
 }
+```
 ---
 ## Comando de ejecución con proxy
 ```
